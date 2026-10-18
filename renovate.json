@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Weekly Renovate updates for the Neovim config's GitHub Actions workflows.",
+  "extends": ["config:recommended"],
+  "schedule": ["* * * * 4"],
+  "packageRules": [
+    {
+      "description": "One weekly PR for every non-major update.",
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "groupName": "non-major dependencies"
+    },
+    {
+      "description": "Major updates get their own PR each, so breaking changes are reviewed separately.",
+      "matchUpdateTypes": ["major"],
+      "groupName": null
+    },
+    {
+      "description": "One weekly PR for non-major GitHub Actions updates.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "groupName": "GitHub Actions"
+    }
+  ]
+}
