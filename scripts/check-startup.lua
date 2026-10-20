@@ -25,6 +25,10 @@ vim.schedule(function()
   -- Optional probes prove the capture remains active after VeryLazy.
   if vim.env.NVIM_SMOKE_INJECT == 'warning' then
     vim.notify('injected startup warning', vim.log.levels.WARN)
+  elseif vim.env.NVIM_SMOKE_INJECT == 'string-warning' then
+    vim.notify('injected startup string-warning', 'warn')
+  elseif vim.env.NVIM_SMOKE_INJECT == 'string-error' then
+    vim.notify('injected startup string-error', 'ERROR')
   elseif vim.env.NVIM_SMOKE_INJECT == 'error' then
     vim.schedule(function()
       error 'injected startup error'

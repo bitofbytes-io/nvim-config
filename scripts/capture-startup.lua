@@ -11,7 +11,8 @@ local function capture_notifications()
     return
   end
   local wrapper = function(message, level, opts)
-    if (level or vim.log.levels.INFO) >= vim.log.levels.WARN then
+    local numeric_level = type(level) == 'string' and vim.log.levels[level:upper()] or level
+    if type(numeric_level) == 'number' and numeric_level >= vim.log.levels.WARN then
       record('notification', message)
     end
     return notify(message, level, opts)

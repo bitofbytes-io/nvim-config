@@ -72,7 +72,8 @@ if not Path(env["NVIM_SMOKE_REPORT"]).is_file():
 
 if args.self_test:
     run("mason-wait-regression", ["-u", "NONE", "-l", "scripts/check-mason-wait.lua"], 10)
-    for probe in ("warning", "error"):
+    run("notification-regression", ["-u", "NONE", "-l", "scripts/check-notification-capture.lua"], 10)
+    for probe in ("warning", "error", "string-warning", "string-error"):
         probe_env = env | {"NVIM_SMOKE_INJECT": probe,
                            "NVIM_SMOKE_REPORT": str(root / f"{probe}-errors.log")}
         run(probe, startup_args, 120, f"injected startup {probe}", probe_env)
