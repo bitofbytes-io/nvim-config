@@ -65,8 +65,9 @@ clear error if neither fallback directory is available.
 ## JavaScript debugging
 
 Mason installs `js-debug-adapter` automatically (`js` is its mason-nvim-dap
-adapter name). The configuration launches the `js-debug-adapter` command from
-Mason's bin directory through nvim-dap's native server support. Both the server
+adapter name). The configuration launches Mason's installed JavaScript entrypoint
+with the native Node.js executable through nvim-dap's server support, including
+on Windows where Mason's `.cmd` launcher cannot be spawned directly. Both the server
 and client use `127.0.0.1` and an automatically allocated port, so no checkout
 under a particular home directory is needed.
 Use `:Mason` to inspect installation failures and `:MasonInstall js-debug-adapter`
@@ -78,7 +79,7 @@ provide the launch/attach configuration for your project through nvim-dap.
 
 Run `stylua --check .` and `python3 scripts/smoke.py --self-test` before submitting changes.
 The smoke test needs Neovim, Git, Make, a C compiler, the Tree-sitter CLI, curl,
-tar, unzip, ripgrep, Node.js/npm, Go, and Python 3, plus network access to download
+tar, unzip, ripgrep, Node.js/npm, Go, and Python 3.9+, plus network access to download
 plugins/tools. It copies
 the configuration into a temporary directory, isolates HOME and every XDG
 location, installs actual plugins with `Lazy! sync`, and checks a second startup
@@ -90,6 +91,7 @@ is printed so logs and the resolved plugin revisions can be inspected.
 `NVIM_BIN` selects a different Neovim executable; `NVIM_SMOKE_ROOT` selects a new,
 empty artifact directory. `--self-test` additionally verifies that injected early
 and delayed warnings, a delayed Lua error, and a failed bootstrap are detected.
+It also checks delayed Mason installation and missing-package timeout behavior.
 CI runs these checks for pull requests and main pushes.
 
 For bug reports, include relevant `:messages`, `:checkhealth`, and

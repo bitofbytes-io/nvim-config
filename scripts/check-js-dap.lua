@@ -1,6 +1,20 @@
 -- Exercise nvim-dap's actual server launch, port substitution, TCP transport,
 -- and DAP framing against Mason's installed adapter, without a debuggee.
 return function()
+  -- Exercise Windows path assembly without pretending to run a Windows binary.
+  -- Both arguments contain spaces and must stay unquoted, separate argv values.
+  local windows = require('custom.js_debug').executable('C:/Users/Test User/AppData/Local/nvim-data/mason', 'C:/Program Files/nodejs/node.exe')
+  assert(windows.command == 'C:/Program Files/nodejs/node.exe', 'Windows DAP must launch the native Node executable')
+  assert(
+    vim.deep_equal(windows.args, {
+      'C:/Users/Test User/AppData/Local/nvim-data/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
+      '${port}',
+      '127.0.0.1',
+    }),
+    'Windows DAP must pass the script, port, and host as separate arguments'
+  )
+  assert(windows.detached == false, 'Windows DAP server must retain process cleanup')
+  io.stdout:write 'Windows JavaScript DAP path/argv regression: passed (not native Windows execution)\n'
   local adapter = require('dap').adapters['pwa-node']
   local session
   local done, failure, capabilities

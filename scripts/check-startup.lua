@@ -6,19 +6,12 @@ vim.schedule(function()
     vim.wait(5000, function()
       return false
     end, 50)
-    local settled = vim.wait(85000, function()
-      for _, package in ipairs(registry.get_all_packages()) do
-        if package:is_installing() then
-          return false
-        end
-      end
-      return true
-    end, 100)
+    local settled = dofile 'scripts/wait-mason.lua'(registry, { 'js-debug-adapter', 'delve' }, 85000)
     assert(settled, 'Mason installers did not finish within the startup deadline')
     for _, name in ipairs { 'js-debug-adapter', 'delve' } do
       assert(registry.get_package(name):is_installed(), 'Missing Mason adapter: ' .. name)
     end
-    assert(vim.fn.executable 'js-debug-adapter' == 1, 'Mason js-debug-adapter command is not executable')
+    assert(vim.fn.executable 'node' == 1, 'Node.js is not executable')
     local dap = require 'dap'
     for _, name in ipairs { 'pwa-node', 'pwa-chrome', 'pwa-msedge', 'node-terminal', 'pwa-extensionHost' } do
       assert(dap.adapters[name], 'JavaScript DAP adapter not registered: ' .. name)

@@ -100,11 +100,7 @@ return {
         type = 'server',
         host = '127.0.0.1',
         port = '${port}',
-        executable = {
-          command = 'js-debug-adapter',
-          args = { '${port}', '127.0.0.1' },
-          detached = false,
-        },
+        executable = require('custom.js_debug').executable(require('mason.settings').current.install_root_dir, vim.fn.exepath 'node'),
       }
     end
   end,

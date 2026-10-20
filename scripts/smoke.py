@@ -71,6 +71,7 @@ if not Path(env["NVIM_SMOKE_REPORT"]).is_file():
     raise SystemExit("Startup exited without producing its result report")
 
 if args.self_test:
+    run("mason-wait-regression", ["-u", "NONE", "-l", "scripts/check-mason-wait.lua"], 10)
     for probe in ("warning", "error"):
         probe_env = env | {"NVIM_SMOKE_INJECT": probe,
                            "NVIM_SMOKE_REPORT": str(root / f"{probe}-errors.log")}
