@@ -8,12 +8,12 @@ Personal Neovim configuration based on
 - Neovim 0.12 or newer
 - [Tree-sitter CLI](https://github.com/tree-sitter/tree-sitter) 0.26.1 or newer
 - Git, Make, a C compiler, and [ripgrep](https://github.com/BurntSushi/ripgrep)
-- `curl` and `tar` for nvim-treesitter parser installation
+- `curl`, `tar`, and `unzip` for parser and Mason tool installation
 - A [Nerd Font](https://www.nerdfonts.com/font-downloads)
 - [LazyGit](https://github.com/jesseduffield/lazygit) for the LazyGit integration
-- [Delve](https://github.com/go-delve/delve) for Go debugging
+- Go for language tooling and Mason-managed [Delve](https://github.com/go-delve/delve) debugging
 - `gofmt` and [goimports](https://pkg.go.dev/golang.org/x/tools/cmd/goimports) for Go formatting
-- [vscode-js-debug](https://github.com/microsoft/vscode-js-debug) for JavaScript debugging
+- Node.js and npm for the Mason-managed JavaScript debug adapter
 - [Delta](https://github.com/dandavison/delta) for Telescope Undo diffs
 
 ## Notable plugins
@@ -23,7 +23,6 @@ modules (the lint module remains disabled), plus:
 
 - [Telescope Undo](https://github.com/debugloop/telescope-undo.nvim)
 - [LazyGit](https://github.com/kdheepak/lazygit.nvim)
-- [nvim-dap-vscode-js](https://github.com/mxsdev/nvim-dap-vscode-js)
 - [Neotest](https://github.com/nvim-neotest/neotest) with Jest and Go adapters
 - [Harpoon](https://github.com/ThePrimeagen/harpoon)
 - [nvim-notify](https://github.com/rcarriga/nvim-notify)
@@ -62,3 +61,36 @@ If Neovim starts from a directory that has been deleted, the configuration
 silently recovers to a valid `$HOME`, then falls back to Neovim's config
 directory. A valid working directory is left unchanged. Startup stops with a
 clear error if neither fallback directory is available.
+
+## JavaScript debugging
+
+Mason installs `js-debug-adapter` automatically (`js` is its mason-nvim-dap
+adapter name). The configuration launches the `js-debug-adapter` command from
+Mason's bin directory through nvim-dap's native server support. Both the server
+and client use `127.0.0.1` and an automatically allocated port, so no checkout
+under a particular home directory is needed.
+Use `:Mason` to inspect installation failures and `:MasonInstall js-debug-adapter`
+to retry. Node.js must be available on PATH. The `pwa-node`, `pwa-chrome`,
+`pwa-msedge`, `node-terminal`, and `pwa-extensionHost` adapters are registered;
+provide the launch/attach configuration for your project through nvim-dap.
+
+## Validation
+
+Run `stylua --check .` and `python3 scripts/smoke.py --self-test` before submitting changes.
+The smoke test needs Neovim, Git, Make, a C compiler, the Tree-sitter CLI, curl,
+tar, unzip, ripgrep, Node.js/npm, Go, and Python 3, plus network access to download
+plugins/tools. It copies
+the configuration into a temporary directory, isolates HOME and every XDG
+location, installs actual plugins with `Lazy! sync`, and checks a second startup
+for errors, warnings, and deprecations. It also starts the configured JavaScript
+adapter, verifies a real DAP `initialize` response, and closes the session/server.
+It waits
+for delayed plugin and installer work with a bounded timeout. The artifact path
+is printed so logs and the resolved plugin revisions can be inspected.
+`NVIM_BIN` selects a different Neovim executable; `NVIM_SMOKE_ROOT` selects a new,
+empty artifact directory. `--self-test` additionally verifies that injected early
+and delayed warnings, a delayed Lua error, and a failed bootstrap are detected.
+CI runs these checks for pull requests and main pushes.
+
+For bug reports, include relevant `:messages`, `:checkhealth`, and
+`:checkhealth kickstart` output along with the Neovim version and config revision.
