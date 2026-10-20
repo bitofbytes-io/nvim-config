@@ -1,8 +1,11 @@
-***************************************************************************
-**NOTE**
-Please verify that the `base repository` above has the intended destination!
-Github by default opens Pull Requests against the parent of a forked repository.
-If this is your personal fork and you didn't intend to open a PR for contribution
-to the original project then adjust the `base repository` accordingly.
-**************************************************************************
+## Changes
 
+Describe the behavior changed and why.
+
+## Validation
+
+- [ ] Ran `stylua --check .`.
+- [ ] Ran `python3 scripts/smoke.py` with Neovim 0.12 and the documented prerequisites.
+- [ ] Updated README requirements or keybindings when needed.
+
+Include relevant results and any remaining limitations.

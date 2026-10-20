@@ -1,0 +1,48 @@
+name: Neovim Startup
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  startup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Install native test prerequisites
+        run: |
+          node --version
+          npm --version
+          go version
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl unzip ripgrep
+          npm install --prefix "$RUNNER_TEMP/tree-sitter" tree-sitter-cli@0.26.10
+          echo "$RUNNER_TEMP/tree-sitter/node_modules/.bin" >> "$GITHUB_PATH"
+      - name: Install Neovim 0.12
+        env:
+          # renovate: datasource=github-releases depName=neovim/neovim
+          NVIM_VERSION: v0.12.6
+        run: |
+          curl --fail --location --retry 3 "https://github.com/neovim/neovim/releases/download/$NVIM_VERSION/nvim-linux-x86_64.tar.gz" -o "$RUNNER_TEMP/nvim.tar.gz"
+          tar -xzf "$RUNNER_TEMP/nvim.tar.gz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/nvim-linux-x86_64/bin" >> "$GITHUB_PATH"
+      - name: Sync plugins and check isolated startup
+        env:
+          NVIM_SMOKE_ROOT: ${{ runner.temp }}/nvim-smoke
+        run: python3 scripts/smoke.py --self-test
+      - name: Save startup diagnostics and plugin revisions
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: nvim-startup-diagnostics
+          path: |
+            ${{ runner.temp }}/nvim-smoke/*.log
+            ${{ runner.temp }}/nvim-smoke/lazy-lock.json
+            ${{ runner.temp }}/nvim-smoke/state/nvim/*.log
+            ${{ runner.temp }}/nvim-smoke/data/nvim/mason/*.log

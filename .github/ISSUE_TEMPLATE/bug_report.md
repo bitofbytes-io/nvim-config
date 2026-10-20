@@ -1,28 +1,30 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Report a problem with this Neovim configuration
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
-<!-- Any bug report not following this template will be immediately closed. Thanks -->
+## Problem
 
-## Describe the bug
-<!-- A clear and concise description of what the bug is. -->
+Describe what happened and what you expected.
 
-## To Reproduce
-<!-- Steps to reproduce the behavior. -->
-1. ...
+## Reproduction
 
-## Desktop
-<!-- please complete the following information. -->
-- OS: 
-- Terminal: 
+Include steps, relevant file types, and whether this happens with a fresh plugin install.
 
-## Neovim Version
-<!-- Output of running `:version` from inside of neovim. -->
+## Environment
 
-```
+- OS:
+- Terminal:
+- Config revision (`git rev-parse HEAD`):
+- Neovim version (`nvim --version`):
+
+## Diagnostics
+
+Paste relevant `:messages`, `:checkhealth`, and `:checkhealth kickstart` output.
+For installation problems, include `:Lazy` or `:Mason` errors. Remove any private paths or tokens before posting.
+
+```text
 ```

@@ -20,5 +20,16 @@
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "groupName": "GitHub Actions"
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/\\.github/workflows/.*\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+(?:version|NVIM_VERSION): (?<currentValue>\\S+)"
+      ]
+    }
   ]
 }
